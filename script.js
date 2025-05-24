@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Variables for scroll handling
     let lastScrollTop = 0;
-    const scrollThreshold = 50; // Minimum scroll amount before hiding/showing navbar
+    const scrollThreshold = 10;
+    let isScrolling;
 
     // Set dark mode as default
     document.documentElement.setAttribute('data-theme', 'dark');
@@ -22,18 +23,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle scroll events for navbar
     window.addEventListener('scroll', () => {
+        // Clear our timeout throughout the scroll
+        window.clearTimeout(isScrolling);
+
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
         
-        if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
+        // Set a timeout to run after scrolling ends
+        isScrolling = setTimeout(() => {
+            if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
+                // Scrolling down - hide navbar
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up - show navbar
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }, 66); // 66ms is roughly 15fps
+    }, { passive: true });
+
+    // Handle touch events for mobile
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        touchEndY = e.touches[0].clientY;
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (touchEndY < touchStartY && currentScroll > scrollThreshold) {
             // Scrolling down - hide navbar
             navbar.style.transform = 'translateY(-100%)';
         } else {
             // Scrolling up - show navbar
             navbar.style.transform = 'translateY(0)';
         }
-        
-        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-    });
+    }, { passive: true });
 
     darkModeToggle.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
