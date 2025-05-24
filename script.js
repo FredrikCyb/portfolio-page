@@ -2,7 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dark mode toggle functionality
     const darkModeToggle = document.getElementById('darkModeToggle');
     const icon = darkModeToggle.querySelector('i');
+    const navbar = document.querySelector('.navbar');
     
+    // Variables for scroll handling
+    let lastScrollTop = 0;
+    const scrollThreshold = 50; // Minimum scroll amount before hiding/showing navbar
+
     // Set dark mode as default
     document.documentElement.setAttribute('data-theme', 'dark');
     icon.classList.replace('fa-moon', 'fa-sun');
@@ -14,6 +19,27 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.removeAttribute('data-theme');
         icon.classList.replace('fa-sun', 'fa-moon');
     }
+
+    // Handle scroll events for navbar
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Only trigger on mobile devices
+        if (window.innerWidth <= 768) {
+            if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
+                // Scrolling down
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up
+                navbar.style.transform = 'translateY(0)';
+            }
+        } else {
+            // Always show navbar on desktop
+            navbar.style.transform = 'translateY(0)';
+        }
+        
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+    });
 
     darkModeToggle.addEventListener('click', () => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
