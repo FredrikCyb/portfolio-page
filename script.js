@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Dark mode toggle functionality
     const darkModeToggle = document.getElementById('darkModeToggle');
     const icon = darkModeToggle.querySelector('i');
     
-    // Check for saved theme preference
+    // Set dark mode as default
+    document.documentElement.setAttribute('data-theme', 'dark');
+    icon.classList.replace('fa-moon', 'fa-sun');
+    localStorage.setItem('theme', 'dark');
+
+    // Check for saved theme preference (only if user has changed it before)
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        icon.classList.replace('fa-moon', 'fa-sun');
+    if (savedTheme === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+        icon.classList.replace('fa-sun', 'fa-moon');
     }
 
     darkModeToggle.addEventListener('click', () => {
