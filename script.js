@@ -24,17 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
         
-        // Only trigger on mobile devices
-        if (window.innerWidth <= 768) {
-            if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
-                // Scrolling down
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                // Scrolling up
-                navbar.style.transform = 'translateY(0)';
-            }
+        if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
+            // Scrolling down - hide navbar
+            navbar.style.transform = 'translateY(-100%)';
         } else {
-            // Always show navbar on desktop
+            // Scrolling up - show navbar
             navbar.style.transform = 'translateY(0)';
         }
         
